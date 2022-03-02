@@ -1,0 +1,17 @@
+<div class="flex flex-col justify-center items-center w-full pb-24 h-screen bg-neutral-100">
+  <div class="flex flex-wrap sm:w-full md:w-1/2 mb-12">
+    <p class="sm:w-full md:w-1/4 p-8">Subscribe <br> to get updated <br>news</p>
+    <h3 class="sm:w-full md:w-3/4 border-8 border-transparent border-l-red-900 sm:pl-8 md:pl-32 font-semibold text-6xl leading-snug" style="font-family: sans-serif">Subscribe To Our Newsletter</h3>
+  </div>
+  <div class="flex w-1/2">
+    <form class="flex flex-wrap items-end justify-end w-full" [formGroup]="formGroup" (ngSubmit)="submit()">
+      <div class="flex flex-col sm:w-full mb-8 md:mb-0 md:w-6/12 pl-4">
+        <label class="text-gray-600">Enter your email here</label>
+        <input type="text" name="email" formControlName="email" (click)="logEmail()" class="bg-transparent border-2 border-transparent border-b-neutral-700  mr-2 focus-visible::border-transparent focus-visible:border-b-neutral-700">
+        <p class="error" *ngIf="email!.hasError('required') && email!.touched"> This Field is required </p>
+        <span class="error" *ngIf="email!.hasError('email') && email!.touched"> Please enter a valid email  </span>
+      </div>
+      <button class="border-2 border-solid border-red-900 p-2 bg-red-900 text-white" type="submit" class="btn" [disabled]="formGroup.invalid">Subscribe</button>
+    </form>
+  </div>
+</div>
