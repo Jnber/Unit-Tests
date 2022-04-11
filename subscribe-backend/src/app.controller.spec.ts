@@ -5,8 +5,10 @@ import { AppService } from './app.service';
 describe('AppController', () => {
   let appController: AppController;
 
+  //called before each test module
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
+      //List all dependencies
       controllers: [AppController],
       providers: [AppService],
     }).compile();

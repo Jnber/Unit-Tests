@@ -8,12 +8,13 @@ import {InjectRepository} from "@nestjs/typeorm";
 @Injectable()
 export class EmailService {
   constructor(
-      @InjectRepository(Email)
-      private repository: Repository<Email>) {}
+    @InjectRepository(Email)
+    private repository: Repository<Email>,
+  ) {}
   async create(createEmailDto: CreateEmailDto) {
     const entity = await this.repository.save(createEmailDto);
     console.log(entity);
-    return entity;
+    return 'user successfully added';
   }
 
   findAll(): Promise<Email[]> {
