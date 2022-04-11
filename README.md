@@ -1,8 +1,7 @@
-# Unit-Tests
-Trying out unit tests on a small subscribe application
+# Testing types
+Trying different tests on a small subscribe application
 
 front-end: Angular
-
 back-end: Nestjs
 
 ## Unit testing
