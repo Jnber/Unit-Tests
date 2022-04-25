@@ -6,7 +6,9 @@ While generating our module, it automatically generates files .spec in it. Those
 ## Let's take a tour of our SPEC file
 
 The testing uses Jest.
+
 ![img.png](img.png)
+
 We are creating a fake module. We are simulating the minimum module to simulate a test.
 
 To run our test files we use
