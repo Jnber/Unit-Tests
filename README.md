@@ -10,3 +10,10 @@ I applied unit tests on the controller and service of my backend:
 - The service : tested the injection using a mock repository to inject into my service to not use my database.
 
 [Check the details in the backend readme](./subscribe-backend/README.md)
+
+## Integration testing
+I applied integration testing on the CRUD service of my angular app. 
+[Check the details in the frontend readme](./signin/README.md)
+
+And the database and service of the nestjs app.
+[Check the details in the backend readme](./subscribe-backend/README.md)
