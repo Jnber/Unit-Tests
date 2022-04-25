@@ -1,28 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailService } from './email.service';
-import { Repository } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Email } from './entities/email.entity';
-import {CreateEmailDto} from "./dto/create-email.dto";
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
-  () => ({
-    findOne: jest.fn(),
-    findAll: jest.fn(),
-    update: jest.fn(),
-    save: jest.fn(),
-  }),
-);
-export type MockType<T> = {
-  [P in keyof T]: jest.Mock<{}>;
-};
 
 describe('EmailService', () => {
   let service: EmailService;
-  let mailRepositoryMock: MockType<Repository<Email>>;
-  let mailTypeRepositoryMock: MockType<Repository<Email>>;
+  const mockEmailRepository = {
+    save: jest.fn((dto) => 'user successfully added'),
+    findAll: jest.fn(() =>
+      Promise.resolve({ id: Date.now(), email: 'test@test.t' }),
+    ),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,18 +18,18 @@ describe('EmailService', () => {
         EmailService,
         {
           provide: getRepositoryToken(Email),
-          useFactory: repositoryMockFactory,
-        },
-        {
-          provide: getRepositoryToken(Email),
-          useFactory: repositoryMockFactory,
+          useValue: mockEmailRepository,
         },
       ],
     }).compile();
 
-    mailRepositoryMock = module.get(getRepositoryToken(Email));
-    mailTypeRepositoryMock = module.get(getRepositoryToken(Email));
     service = module.get<EmailService>(EmailService);
+  });
+
+  it('should create a subscriber and return it', async () => {
+    expect(await service.create({ email: 'test@test.t' })).toEqual(
+      'user successfully added',
+    );
   });
 
   it('should be defined', () => {

@@ -3,7 +3,7 @@ import { CreateEmailDto } from './dto/create-email.dto';
 import { Repository } from 'typeorm';
 import { Email } from './entities/email.entity';
 import { UpdateEmailDto } from './dto/update-email.dto';
-import {InjectRepository} from "@nestjs/typeorm";
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class EmailService {

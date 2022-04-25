@@ -1,73 +1,61 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Backend testing
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Our newsletter backend contains one module : email module. In the following we will apply several types of tests on  it.
+While generating our module, it automatically generates files .spec in it. Those files are our testing files. We will create our testes inside the controller.spec and service.spec.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Let's take a tour of our SPEC file
 
-## Description
+The testing uses Jest.
+![img.png](img.png)
+We are creating a fake module. We are simulating the minimum module to simulate a test.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+To run our test files we use
+```shell
+npm run test:watch
 ```
+## Unit testing
 
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+First we will test our email controller isolated.
+Since it is calling the email Service, we will mock our service :
+```ts
+const mockEmailService = {};
+beforeAll(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+        controllers: [EmailController],
+        providers: [EmailService],
+    }).overrideProvider(EmailService)
+    .useValue(mockEmailService)
+    .compile();
+});
 ```
+Why do we mock the service? because in the constructor of our controller we initiate an instance of the service. So nest injects the service when the controller is created. And for our testing the controller is created. And since we want to unit test our controller we need to not use the service.
 
-## Test
+We are going to test the create function of our controller :
+```ts
+//Add the function implementation to our mock service
+const mockEmailService = {
+    create: jest.fn((dto) => {
+      return {
+        id: Date.now(),
+        ...dto,
+      };
+    }),
+  };
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+//New describe block to test our add email function
+describe('add To Newsletter', () => {
+    it('should add a new subscriber', () => {
+        expect(controller.create({ email: 'test@test.test' })).toEqual({
+            id: expect.any(Number),
+            email: 'test@test.test',
+        });
+    });
+    //test the service call with params
+    it('should call service with params', async () => {
+        await controller.create({ email: 'test@t.com' });
+        expect(mockEmailService.create).toHaveBeenCalledWith({
+            email: 'test@t.com',
+        });
+    });
+});
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
