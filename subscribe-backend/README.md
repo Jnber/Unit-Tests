@@ -61,3 +61,34 @@ describe('add To Newsletter', () => {
     });
 });
 ```
+
+## E2E Testing
+
+Here we will test the interaction of the user with our http requests :
+The file is /test/email.e2e-spec.ts
+```ts
+describe('Emails', () => {
+  let app: INestApplication;
+  let emailService: { findAll: () => ['test'] };
+
+  beforeAll(async () => {
+    const refModule = await Test.createTestingModule({
+      imports: [EmailModule],
+    })
+      .overrideProvider(EmailService)
+      .useValue(emailService)
+      .compile();
+
+    app = refModule.createNestApplication();
+    await app.init();
+  });
+  it(`/GET emails`, () => {
+    return request(app.getHttpServer()).get('/email').expect(200).expect({
+      data: emailService.findAll(),
+    });
+  });
+  afterAll(async () => {
+    await app.close();
+  });
+});
+```
