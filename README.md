@@ -17,3 +17,7 @@ I applied integration testing on the CRUD service of my angular app.
 
 And the database and service of the nestjs app.
 [Check the details in the backend readme](./subscribe-backend/README.md)
+
+## E2E testing
+I applied e2e testing to our http requests
+[Check the details in the backend readme](./subscribe-backend/README.md)
